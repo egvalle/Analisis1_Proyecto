@@ -1,12 +1,16 @@
 from fastapi import FastAPI
 
-app = FastAPI(
-    title="Cosecha Red API",
-    version="1.0.0"
-)
+from app.database.database import engine
+from app.models.user_model import Base
+
+
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
 
 @app.get("/")
 def root():
     return {
-        "message": "Cosecha Red API funcionando"
+        "message": "Cosecha Red API"
     }

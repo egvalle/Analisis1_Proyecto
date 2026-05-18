@@ -1,9 +1,12 @@
-export default function LoginPage() {
+import AuthLayout from "../layouts/AuthLayout"
+import LoginForm from "../components/auth/LoginForm"
+
+function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-3xl font-bold">
-        Login
-      </h1>
-    </div>
+    <AuthLayout>
+      <LoginForm />
+    </AuthLayout>
   )
 }
+
+export default LoginPage

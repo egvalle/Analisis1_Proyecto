@@ -1,11 +1,12 @@
-function App() {
+import AuthLayout from "../layouts/AuthLayout"
+import RegisterForm from "../components/auth/RegisterForm"
+
+function RegisterPage() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-green-700">
-        Cosecha Red
-      </h1>
-    </div>
+    <AuthLayout>
+      <RegisterForm />
+    </AuthLayout>
   )
 }
 
-export default App
+export default RegisterPage
