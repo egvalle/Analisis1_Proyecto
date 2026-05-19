@@ -1,11 +1,12 @@
-function App() {
+import AppLayout from "../layouts/AppLayout"
+import Dashboard from "../components/dashboard/Dashboard"
+
+function DashboardPage() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-green-700">
-        Cosecha Red
-      </h1>
-    </div>
+    <AppLayout>
+      <Dashboard />
+    </AppLayout>
   )
 }
 
-export default App
+export default DashboardPage

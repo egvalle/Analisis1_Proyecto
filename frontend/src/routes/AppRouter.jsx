@@ -3,41 +3,37 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import HomePage from "../pages/HomePage"
 import LoginPage from "../pages/LoginPage"
 import RegisterPage from "../pages/RegisterPage"
-import CatalogPage from "../pages/CatalogPage"
+import DashboardPage from "../pages/DashboardPage"
+
 import ProtectedRoute from "./ProtectedRoute"
 
-import { ROLES } from "../constants/roles"
-
 function AppRouter() {
-
   return (
-
     <BrowserRouter>
-
       <Routes>
-
+        {/* PUBLIC */}
         <Route
           path="/"
-          element={<HomePage />}
+          element={<HomePage/>}
         />
-
         <Route
           path="/login"
-          element={<LoginPage />}
+          element={<LoginPage/>}
         />
-
         <Route
           path="/register"
-          element={<RegisterPage />}
+          element={<RegisterPage/>}
         />
-
+        {/* PRIVATE */}
         <Route
-          path="/catalog"
-          element={<CatalogPage />}
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage/>
+            </ProtectedRoute>
+          }
         />
-
       </Routes>
-
     </BrowserRouter>
   )
 }

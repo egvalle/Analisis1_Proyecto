@@ -1,82 +1,72 @@
-import axios from "axios"
+const USERS_KEY = "users"
 
-
-/*
-  API BASE URL
-*/
-
-const API_URL = "http://localhost:8000/api/v1/auth"
-
-
-/*
-  REGISTER
-*/
-
-export const registerUser = async (userData) => {
-
-  try {
-
-    const response = await axios.post(
-
-      `${API_URL}/register`,
-
-      userData
-
-    )
-
-    return response.data
-
-  }
-
-  catch (error) {
-
-    throw (
-
-      error.response?.data ||
-
-      {
-        detail: "Error al registrar usuario"
-      }
-
-    )
-
-  }
-
+/* GET USERS */
+const getUsers = () => {
+  const users = localStorage.getItem(USERS_KEY)
+  return users
+    ? JSON.parse(users)
+    : []
 }
 
+/* SAVE USERS */
+const saveUsers = (users) => {
+  localStorage.setItem(
+    USERS_KEY,
+    JSON.stringify(users)
+  )
+}
 
-/*
-  LOGIN
-*/
+/* REGISTER */
+export const registerUser = async (userData) => {
+  const users = getUsers()
+  /* EMAIL EXISTS */
+  const emailExists = users.some(
+    user => user.email === userData.email
+  )
+  if (emailExists) {
+    throw {
+      detail: "El correo ya está registrado"
+    }
+  }
+  /* NEW USER */
+  const newUser = {
+    id: Date.now(),
+    full_name: userData.full_name,
+    email: userData.email,
+    phone: userData.phone,
+    password: userData.password,
+    roles: userData.roles
+  }
+  /* SAVE */
+  users.push(newUser)
+  saveUsers(users)
+  return {
+    message: "Usuario registrado correctamente"
+  }
+}
 
+/* LOGIN */
 export const loginUser = async (credentials) => {
-
-  try {
-
-    const response = await axios.post(
-
-      `${API_URL}/login`,
-
-      credentials
-
-    )
-
-    return response.data
-
+  const users = getUsers()
+  /* FIND USER */
+  const user = users.find(
+    u =>
+      u.email === credentials.email
+      &&
+      u.password === credentials.password
+  )
+  /* INVALID */
+  if (!user) {
+    throw {
+      detail: "Credenciales inválidas"
+    }
   }
-
-  catch (error) {
-
-    throw (
-
-      error.response?.data ||
-
-      {
-        detail: "Error al iniciar sesión"
-      }
-
-    )
-
+  /* TOKEN MOCK */
+  const fakeToken =
+    `token-${user.id}`
+  return {
+    access_token: fakeToken,
+    token_type: "bearer",
+    user
   }
-
 }

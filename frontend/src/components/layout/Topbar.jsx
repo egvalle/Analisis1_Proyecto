@@ -1,35 +1,43 @@
-import { Bell, Search, Menu } from "lucide-react"
+import { LogOut, Menu } from "lucide-react"
+import { useAuth } from "../../context/AuthContext"
 
-function Topbar({ setIsOpen }) {
+function Topbar({ onMenuClick }) {
+  const { user, logout } = useAuth()
   return (
-    <header className="h-20 bg-white border-b border-border px-4 md:px-8 flex items-center justify-between">
+    <header className="h-20 bg-white border-b border-border px-4 sm:px-6 flex items-center justify-between">
       {/* LEFT */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center">
         {/* MOBILE MENU */}
-        <button onClick={() => setIsOpen(true)} className="lg:hidden w-11 h-11 rounded-xl border border-border flex items-center justify-center">
+        <button onClick={onMenuClick} className="lg:hidden border border-border p-2 rounded-xl mr-4">
           <Menu size={22} />
         </button>
       </div>
       {/* RIGHT */}
-      <div className="flex items-center gap-3">
-        {/* SEARCH */}
-        <div className="hidden xl:flex items-center gap-2 bg-background border border-border rounded-xl px-4 py-2 min-w-[260px]">
-          <Search size={18} className="text-textSoft"/>
-          <input type="text" placeholder="Buscar..." className="bg-transparent outline-none text-sm w-full"/>
-        </div>
-        {/* NOTIFICATIONS */}
-        <button className="relative w-11 h-11 rounded-xl border border-border bg-white flex items-center justify-center">
-          <Bell size={20} />
-          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-danger"/>
-        </button>
+      <div className="flex items-center gap-3 sm:gap-5">
         {/* USER */}
-        <div className="flex items-center gap-3 bg-background px-3 py-2 rounded-xl border border-border">
-          <div className="w-10 h-10 rounded-full bg-leaf text-white flex items-center justify-center font-semibold">EV</div>
-          <div className="hidden md:block">
-            <p className="text-sm font-semibold">Edwin Valle</p>
-            <p className="text-xs text-textSoft">Comprador</p>
-          </div>
+        <div className="hidden sm:block text-right">
+          <p className="font-semibold text-earth">
+            {user?.name || user?.full_name}
+          </p>
+          <p className="text-sm text-textSoft">
+            {user?.email}
+          </p>
         </div>
+        {/* AVATAR */}
+        <div className="w-11 h-11 rounded-full bg-leaf text-white flex items-center justify-center font-bold text-lg">
+          {
+            user?.name?.charAt(0)
+            ||
+            user?.full_name?.charAt(0)
+          }
+        </div>
+        {/* LOGOUT */}
+        <button onClick={logout} className="border border-border hover:bg-red-50 hover:border-red-200 p-3 rounded-xl transition">
+          <LogOut
+            size={20}
+            className="text-red-500"
+          />
+        </button>
       </div>
     </header>
   )

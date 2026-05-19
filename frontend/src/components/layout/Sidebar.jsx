@@ -1,66 +1,109 @@
-import { NavLink } from "react-router-dom"
-import { LayoutDashboard, Store, History, Star, User, Leaf, X } from "lucide-react"
+import { LayoutDashboard, ShoppingBasket, History, Star, Package, ShieldCheck, User } from "lucide-react"
 
-function Sidebar({ isOpen, setIsOpen }) {
+import SidebarItem from "./SidebarItem"
+import { useAuth } from "../../context/AuthContext"
+import { ROLES } from "../../constants/roles"
+
+function Sidebar({ isOpen, onClose }) {
+  const { user } = useAuth()
+  /*
+    ROLES
+  */
+  const isBuyer =
+    user?.roles?.includes(
+      ROLES.BUYER
+    )
+  const isProducer =
+    user?.roles?.includes(
+      ROLES.PRODUCER
+    )
+  const isAdmin =
+    user?.roles?.includes(
+      ROLES.ADMIN
+    )
   return (
     <>
-      {/* OVERLAY MOBILE */}
+      {/* OVERLAY */}
       {
         isOpen && (
-          <div onClick={() => setIsOpen(false)} className="fixed inset-0 bg-black/40 z-40 lg:hidden"/>
+          <div onClick={onClose} className="fixed inset-0 bg-black/40 z-40 lg:hidden"/>
         )
       }
       {/* SIDEBAR */}
-      <aside className={`fixed lg:static top-0 left-0 z-50 w-72 min-h-screen bg-white border-r border-border shadow-soft p-6 transition-transform duration-300
+      <aside className={`fixed top-0 left-0 z-50 w-72 h-screen bg-white border-r border-border p-5 flex flex-col transform transition-transform duration-300 lg:translate-x-0 lg:static
           ${isOpen
             ? "translate-x-0"
-            : "-translate-x-full lg:translate-x-0"}
+            : "-translate-x-full"
+          }
       `}>
-        {/* TOP */}
-        <div className="flex items-center justify-between mb-10">
-          {/* LOGO */}
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center">
-              <Leaf size={24} className="text-leaf"/>
-            </div>
-            <div>
-              <div className="flex items-center gap-1">
-                <span className="text-2xl font-bold tracking-wide text-leaf">COSECHA</span><span className="text-2xl font-bold tracking-wide text-danger">RED</span>
-              </div>
-              <p className="text-sm text-textSoft">Comunidad La Esperanza</p>
-            </div>
-          </div>
-          {/* CLOSE MOBILE */}
-          <button onClick={() => setIsOpen(false)} className="lg:hidden p-2">
-            <X size={22} />
-          </button>
+        {/* LOGO */}
+        <div className="mb-10">
+          <h1 className="text-3xl font-bold">
+            <span className="text-leaf">COSECHA</span><span className="text-danger ml-2">RED</span>
+          </h1>
         </div>
-        {/* NAV */}
+        {/* NAVIGATION */}
         <nav className="flex flex-col gap-2">
+          {/* DASHBOARD */}
           <SidebarItem
+            to="/dashboard"
             icon={<LayoutDashboard size={20} />}
             label="Inicio"
-            to="/"
           />
+          {/* BUYER */}
+          {
+            isBuyer && (
+              <>
+                <SidebarItem
+                  to="/"
+                  icon={<ShoppingBasket size={20} />}
+                  label="Catálogo"
+                />
+                <SidebarItem
+                  to="/historial"
+                  icon={<History size={20} />}
+                  label="Historial"
+                />
+                <SidebarItem
+                  to="/valoraciones"
+                  icon={<Star size={20} />}
+                  label="Valoraciones"
+                />
+              </>
+            )
+          }
+          {/* PRODUCER */}
+          {
+            isProducer && (
+              <>
+                <SidebarItem
+                  to="/mis-publicaciones"
+                  icon={<Package size={20} />}
+                  label="Mis publicaciones"
+                />
+                <SidebarItem
+                  to="/ventas"
+                  icon={<History size={20} />}
+                  label="Historial ventas"
+                />
+              </>
+            )
+          }
+          {/* ADMIN */}
+          {
+            isAdmin && (
+              <SidebarItem
+                to="/admin"
+                icon={<ShieldCheck size={20} />}
+                label="Administración"
+              />
+            )
+          }
+          {/* PROFILE */}
           <SidebarItem
-            icon={<Store size={20} />}
-            label="Catálogo"
-            to="/catalog"
-          />
-          <SidebarItem
-            icon={<History size={20} />}
-            label="Historial"
-            to="/history"
-          />
-          <SidebarItem
-            icon={<Star size={20} />}
-            label="Valoraciones"
-            to="/reviews"
-          />
-          <SidebarItem
+            to="/perfil"
             icon={<User size={20} />}
             label="Perfil"
-            to="/profile"
           />
         </nav>
       </aside>
@@ -69,18 +112,3 @@ function Sidebar({ isOpen, setIsOpen }) {
 }
 
 export default Sidebar
-
-function SidebarItem({ icon, label, to }) {
-  return (
-    <NavLink to={to} className={({ isActive }) => `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium
-        ${isActive
-          ? "bg-leaf text-white shadow-md"
-          : "text-text hover:bg-sand"}
-    `}>
-      {icon}
-      <span>
-        {label}
-      </span>
-    </NavLink>
-  )
-}

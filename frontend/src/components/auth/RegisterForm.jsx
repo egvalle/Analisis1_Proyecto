@@ -1,91 +1,145 @@
-import { User, Mail, Lock, UserPlus } from "lucide-react"
-
+import { useState } from "react"
 import { Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { registerUser } from "../../services/authService"
+
 import { ROLES } from "../../constants/roles"
 
 function RegisterForm() {
+  const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    phone: "",
+    password: "",
+    roles: []
+  })
+  /* INPUT CHANGE */
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+  /* ROLE CHANGE */
+  const handleRoleChange = (role) => {
+    const alreadySelected =
+      formData.roles.includes(role)
+    if (alreadySelected) {
+      setFormData({
+        ...formData,
+        roles: formData.roles.filter(
+          r => r !== role
+        )
+      })
+    } else {
+      setFormData({
+        ...formData,
+        roles: [
+          ...formData.roles,
+          role
+        ]
+      })
+    }
+  }
+  /* SUBMIT */
+  const navigate = useNavigate()
+    const handleSubmit = async (e) => {
+      e.preventDefault()
+      /* VALIDATE ROLES */
+      if (formData.roles.length === 0) {
+        alert("Selecciona al menos un rol")
+        return
+      }
+      try {
+        await registerUser(formData)
+        navigate("/login")
+      } catch (err) {
+        console.log(err)
+        alert(
+          err.detail ||
+          "Error al registrar usuario"
+        )
+      }
+    }
   return (
-    <div>
-      {/* HEADER */}
+    <form onSubmit={handleSubmit} className="bg-white border border-border rounded-3xl p-8 shadow-soft w-full max-w-md">
+      {/* TITLE */}
+      <h1 className="text-3xl font-bold text-earth mb-2">Crear cuenta</h1>
+      <p className="text-textSoft mb-8">
+        Regístrate para comenzar a utilizar
+        Cosecha Red.
+      </p>
+      {/* NAME */}
+      <div className="mb-5">
+        <label className="block mb-2 font-medium text-earth">Nombre completo</label>
+        <input type="text" name="full_name" required value={formData.full_name} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
+      </div>
+      {/* EMAIL */}
+      <div className="mb-5">
+        <label className="block mb-2 font-medium text-earth">Correo electrónico</label>
+        <input type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
+      </div>
+      {/* PHONE */}
+      <div className="mb-5">
+        <label className="block mb-2 font-medium text-earth">Teléfono</label>
+        <input type="text" name="phone" required value={formData.phone} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
+      </div>
+      {/* PASSWORD */}
+      <div className="mb-5">
+        <label className="block mb-2 font-medium text-earth">Contraseña</label>
+        <input type="password" name="password" required value={formData.password} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
+      </div>
+      {/* ROLES */}
       <div className="mb-8">
-        <h2 className="text-4xl font-bold text-earth">Crear cuenta</h2>
-        <p className="mt-2 text-textSoft">Regístrate para comenzar a usar Cosecha Red.</p>
+        <label className="block mb-3 font-medium text-earth">Tipo de cuenta</label>
+        <div className="space-y-3">
+          {/* BUYER */}
+          <label className="flex items-center gap-3 border border-border rounded-xl p-4 cursor-pointer hover:border-leaf">
+            <input type="checkbox"
+              checked={
+                formData.roles.includes(
+                  ROLES.BUYER
+                )
+              }
+              onChange={() =>
+                handleRoleChange(
+                  ROLES.BUYER
+                )
+              }
+            />
+            <div>
+              <p className="font-semibold text-earth">Comprador</p>
+              <p className="text-sm text-textSoft">Explorar y comprar productos.</p>
+            </div>
+          </label>
+          {/* PRODUCER */}
+          <label className="flex items-center gap-3 border border-border rounded-xl p-4 cursor-pointer hover:border-leaf">
+            <input type="checkbox"
+              checked={
+                formData.roles.includes(
+                  ROLES.PRODUCER
+                )
+              }
+              onChange={() =>
+                handleRoleChange(
+                  ROLES.PRODUCER
+                )
+              }
+            />
+            <div>
+              <p className="font-semibold text-earth">Productor</p>
+              <p className="text-sm text-textSoft">Publicar y administrar productos.</p>
+            </div>
+          </label>
+        </div>
       </div>
-      {/* FORM */}
-      <form className="space-y-5">
-        {/* NAME */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Nombre completo</label>
-          <div className="flex items-center gap-3 border border-border rounded-xl px-4 py-3 bg-background">
-            <User
-              size={18}
-              className="text-textSoft"
-            />
-            <input type="text" placeholder="Juan Pérez" className="w-full bg-transparent outline-none"/>
-          </div>
-        </div>
-        {/* EMAIL */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Correo electrónico</label>
-          <div className="flex items-center gap-3 border border-border rounded-xl px-4 py-3 bg-background">
-            <Mail
-              size={18}
-              className="text-textSoft"
-            />
-            <input type="email" placeholder="correo@ejemplo.com" className="w-full bg-transparent outline-none"/>
-          </div>
-        </div>
-        {/* ROLE */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Tipo de cuenta</label>
-          <select className="w-full border border-border rounded-xl px-4 py-3 bg-background outline-none">
-            <option value="">
-              Selecciona una opción
-            </option>
-            <option value={ROLES.BUYER}>
-              Comprador
-            </option>
-            <option value={ROLES.PRODUCER}>
-              Productor
-            </option>
-          </select>
-        </div>
-        {/* PASSWORD */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Contraseña</label>
-          <div className="flex items-center gap-3 border border-border rounded-xl px-4 py-3 bg-background">
-            <Lock
-              size={18}
-              className="text-textSoft"
-            />
-            <input type="password" placeholder="••••••••" className="w-full bg-transparent outline-none"/>
-          </div>
-        </div>
-        {/* CONFIRM PASSWORD */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Confirmar contraseña</label>
-          <div className="flex items-center gap-3 border border-border rounded-xl px-4 py-3 bg-background">
-            <Lock
-              size={18}
-              className="text-textSoft"
-            />
-            <input type="password" placeholder="••••••••" className="w-full bg-transparent outline-none"/>   
-          </div>
-        </div>
-        {/* BUTTON */}
-        <button className="w-full bg-leaf hover:bg-leafDark text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition">
-          <UserPlus size={20} />
-          Crear cuenta
-        </button>
-      </form>
-      {/* FOOTER */}
-      <div className="mt-8 text-center text-sm text-textSoft">
-        ¿Ya tienes cuenta?
-        <Link to="/login" className="ml-2 text-leaf font-semibold hover:underline">
-          Iniciar sesión
-        </Link>
-      </div>
-    </div>
+      {/* BUTTON */}
+      <button type="submit" className="w-full bg-leaf hover:bg-leafDark text-white py-3 rounded-xl font-semibold transition">Crear cuenta</button>
+      {/* LOGIN */}
+      <p className="mt-6 text-center text-sm text-textSoft">¿Ya tienes cuenta?
+        <Link to="/login" className="ml-2 text-leaf font-semibold">Iniciar sesión</Link>
+      </p>
+    </form>
   )
 }
 

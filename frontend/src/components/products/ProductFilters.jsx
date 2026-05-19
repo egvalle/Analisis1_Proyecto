@@ -1,40 +1,55 @@
-import { Search, MapPin, SlidersHorizontal } from "lucide-react"
+import { Search, Filter } from "lucide-react"
 
-function ProductFilters({ search, setSearch, category, setCategory, location, setLocation }) {
+function ProductFilters({ filters, setFilters, products }) {
+  /* UNIQUE CATEGORIES */
+  const categories = [
+    ...new Set(
+      products.map(
+        product => product.category
+      )
+    )
+  ]
+  /* SEARCH */
+  const handleSearchChange = (e) => {
+    setFilters({
+      ...filters,
+      search: e.target.value
+    })
+  }
+  /* CATEGORY */
+  const handleCategoryChange = (e) => {
+    setFilters({
+      ...filters,
+      category: e.target.value
+    })
+  }
   return (
-    <div className="bg-white border border-border rounded-2xl p-5 shadow-soft mb-8">
-      {/* HEADER */}
-      <div className="flex items-center gap-2 mb-5">
-        <SlidersHorizontal
-          size={20}
-          className="text-leaf"
-        />
-        <h3 className="text-lg font-semibold text-earth">Filtros</h3>
-      </div>
-      {/* FILTERS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div className="bg-white border border-border rounded-3xl p-5">
+      <div className="flex flex-col lg:flex-row gap-4">
         {/* SEARCH */}
-        <div className="flex items-center gap-3 border border-border rounded-xl px-4 py-3 bg-background">
-          <Search
-            size={18}
-            className="text-textSoft"
-          />
-          <input type="text" placeholder="Buscar producto..." value={search} onChange={(e) => setSearch(e.target.value)} className="bg-transparent outline-none w-full text-sm"/>
+        <div className="flex-1 relative">
+          <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-textSoft"/>
+          <input type="text" placeholder="Buscar productos..." value={filters.search} onChange={handleSearchChange} className="w-full border border-border rounded-2xl py-3 pl-12 pr-4 outline-none focus:border-leaf"/>
         </div>
         {/* CATEGORY */}
-        <select value={category} onChange={(e) => setCategory(e.target.value)} className="border border-border rounded-xl px-4 py-3 bg-background text-sm outline-none">
-          <option value="">Todas las categorías</option>
-          <option value="Granos">Granos</option>
-          <option value="Verduras">Verduras</option>
-          <option value="Frutas">Frutas</option>
-        </select>
-        {/* LOCATION */}
-        <div className="flex items-center gap-3 border border-border rounded-xl px-4 py-3 bg-background">
-          <MapPin
+        <div className="relative min-w-[220px]">
+          <Filter
             size={18}
-            className="text-textSoft"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-textSoft pointer-events-none"
           />
-          <input type="text" placeholder="Ubicación..." value={location} onChange={(e) => setLocation(e.target.value)} className="bg-transparent outline-none w-full text-sm"/>
+          <select value={filters.category} onChange={handleCategoryChange} className="w-full border border-border rounded-2xl py-3 pl-11 pr-4 outline-none bg-white appearance-none focus:border-leaf">
+            <option value="">Todas las categorías</option>
+            {
+              categories.map(category => (
+                <option
+                  key={category}
+                  value={category}
+                >
+                  {category}
+                </option>
+              ))
+            }
+          </select>
         </div>
       </div>
     </div>

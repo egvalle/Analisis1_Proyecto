@@ -1,51 +1,90 @@
-import { Mail, Lock, LogIn } from "lucide-react"
-import { Link } from "react-router-dom"
+import { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { loginUser } from "../../services/authService"
+import { useAuth } from "../../context/AuthContext"
 
 function LoginForm() {
+  const navigate = useNavigate()
+  const { login } = useAuth()
+  /* FORM */
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  })
+  /* LOADING */
+  const [loading, setLoading] = useState(false)
+  /* ERROR */
+  const [error, setError] = useState("")
+  /* INPUT CHANGE */
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+  /* SUBMIT */
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      setLoading(true)
+      setError("")
+      const response =
+        await loginUser(formData)
+      /* SAVE SESSION */
+      login(
+        response.user,
+        response.access_token
+      )
+      /* REDIRECT */
+      navigate("/dashboard")
+    }
+    catch (err) {
+      setError(
+        err.detail ||
+        "Error al iniciar sesión"
+      )
+    }
+    finally {
+      setLoading(false)
+    }
+  }
   return (
-    <div>
+    <form onSubmit={handleSubmit} className="bg-white border border-border rounded-3xl p-8 shadow-soft w-full max-w-md">
+      {/* TITLE */}
+      <h1 className="text-3xl font-bold text-earth mb-2">Iniciar sesión</h1>
+      <p className="text-textSoft mb-8">Accede a tu cuenta.</p>
+      {/* ERROR */}
+      {
+        error && (
+          <div className="mb-5 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl">
+            {error}
+          </div>
+        )
+      }
+      {/* EMAIL */}
+      <div className="mb-5">
+        <label className="block mb-2 font-medium text-earth">Correo electrónico</label>
+        <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
+      </div>
+      {/* PASSWORD */}
       <div className="mb-8">
-        <h2 className="text-4xl font-bold text-earth">Iniciar sesión</h2>
-        <p className="mt-2 text-textSoft">Accede a tu cuenta para continuar.</p>
+        <label className="block mb-2 font-medium text-earth">Contraseña</label>
+        <input type="password" name="password" value={formData.password} onChange={handleChange} required className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
       </div>
-      {/* FORM */}
-      <form className="space-y-5">
-        {/* EMAIL */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Correo electrónico</label>
-          <div className="flex items-center gap-3 border border-border rounded-xl px-4 py-3 bg-background">
-            <Mail
-              size={18}
-              className="text-textSoft"
-            />
-            <input type="email" placeholder="correo@ejemplo.com" className="w-full bg-transparent outline-none"/>
-          </div>
-        </div>
-        {/* PASSWORD */}
-        <div>
-          <label className="block text-sm font-medium mb-2">Contraseña</label>
-          <div className="flex items-center gap-3 border border-border rounded-xl px-4 py-3 bg-background">
-            <Lock
-              size={18}
-              className="text-textSoft"
-            />
-            <input type="password" placeholder="••••••••" className="w-full bg-transparent outline-none" />
-          </div>
-        </div>
-        {/* BUTTON */}
-        <button className="w-full bg-leaf hover:bg-leafDark text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition">
-          <LogIn size={20} />
-          Ingresar
-        </button>
-      </form>
-      {/* FOOTER */}
-      <div className="mt-8 text-center text-sm text-textSoft">
+      {/* BUTTON */}
+      <button type="submit" disabled={loading} className="w-full bg-leaf hover:bg-leafDark text-white py-3 rounded-xl font-semibold transition">
+        {
+          loading
+            ? "Ingresando..."
+            : "Iniciar sesión"
+        }
+      </button>
+      {/* REGISTER */}
+      <p className="mt-6 text-center text-sm text-textSoft">
         ¿No tienes cuenta?
-        <Link to="/register" className="ml-2 text-leaf font-semibold hover:underline">
-          Crear cuenta
-        </Link>
-      </div>
-    </div>
+        <Link to="/register" className="ml-2 text-leaf font-semibold">Crear cuenta</Link>
+      </p>
+    </form>
   )
 }
 
