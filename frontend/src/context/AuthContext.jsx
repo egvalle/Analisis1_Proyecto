@@ -3,21 +3,13 @@ import { createContext, useContext, useEffect, useState } from "react"
 const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
-  /*
-    USER STATE
-  */
+  /* USER STATE */
   const [user, setUser] = useState(null)
-  /*
-    TOKEN STATE
-  */
+  /* TOKEN STATE */
   const [token, setToken] = useState(null)
-  /*
-    LOADING
-  */
+  /* LOADING */
   const [loading, setLoading] = useState(true)
-  /*
-    LOAD SESSION
-  */
+  /* LOAD SESSION */
   useEffect(() => {
     const storedToken =
       localStorage.getItem("token")
@@ -29,9 +21,7 @@ export function AuthProvider({ children }) {
     }
     setLoading(false)
   }, [])
-  /*
-    LOGIN
-  */
+  /* LOGIN */
   const login = (userData, accessToken) => {
     localStorage.setItem(
       "token",
@@ -44,22 +34,16 @@ export function AuthProvider({ children }) {
     setUser(userData)
     setToken(accessToken)
   }
-  /*
-    LOGOUT
-  */
+  /* LOGOUT */
   const logout = () => {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
     setUser(null)
     setToken(null)
   }
-  /*
-    HELPERS
-  */
+  /* HELPERS */
   const isAuthenticated = !!token
-  /*
-    CONTEXT VALUE
-  */
+  /* CONTEXT VALUE */
   const value = {
     user,
     token,
@@ -74,9 +58,7 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
-/*
-  CUSTOM HOOK
-*/
+/* CUSTOM HOOK */
 export function useAuth() {
   return useContext(AuthContext)
 }

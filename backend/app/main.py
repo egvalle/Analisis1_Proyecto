@@ -1,16 +1,19 @@
 from fastapi import FastAPI
-
-from app.database.database import engine
-from app.models.user_model import Base
-
-
-Base.metadata.create_all(bind=engine)
+from fastapi.middleware.cors import CORSMiddleware
+from app.routes.auth_routes import router as auth_router
 
 app = FastAPI()
 
+""" CORS """
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
-@app.get("/")
-def root():
-    return {
-        "message": "Cosecha Red API"
-    }
+""" ROUTES """
+app.include_router(auth_router)

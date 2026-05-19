@@ -55,7 +55,7 @@ function Sidebar({ isOpen, onClose }) {
             isBuyer && (
               <>
                 <SidebarItem
-                  to="/"
+                  to="/catalogo"
                   icon={<ShoppingBasket size={20} />}
                   label="Catálogo"
                 />

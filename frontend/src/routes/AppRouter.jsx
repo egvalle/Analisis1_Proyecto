@@ -4,6 +4,7 @@ import HomePage from "../pages/HomePage"
 import LoginPage from "../pages/LoginPage"
 import RegisterPage from "../pages/RegisterPage"
 import DashboardPage from "../pages/DashboardPage"
+import CatalogPage from "../pages/CatalogPage"
 
 import ProtectedRoute from "./ProtectedRoute"
 
@@ -33,6 +34,15 @@ function AppRouter() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/catalogo"
+          element={
+            <ProtectedRoute>
+              <CatalogPage />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   )

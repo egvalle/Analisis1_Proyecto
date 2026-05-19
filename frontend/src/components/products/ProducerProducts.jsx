@@ -3,7 +3,7 @@ import { Plus, Package } from "lucide-react"
 
 import ProductCard from "./ProductCard"
 import ProductFormModal from "./ProductFormModal"
-import { getProductsByProducer, deleteProduct, createProduct } from "../../services/productService"
+import { getProductsByProducer, deleteProduct, createProduct, updateProduct } from "../../services/productService"
 import { useAuth } from "../../context/AuthContext"
 
 function ProducerProducts() {
@@ -16,6 +16,9 @@ function ProducerProducts() {
   /* MODAL */
   const [isModalOpen, setIsModalOpen] =
     useState(false)
+  /* MODAL EDIT */
+  const [editingProduct, setEditingProduct] =
+  useState(null)
   /* LOAD PRODUCTS */
   const loadProducts = async () => {
     setLoading(true)
@@ -54,9 +57,7 @@ function ProducerProducts() {
     }
   }
   /* CREATE PRODUCT */
-  const handleCreateProduct = async (
-    productData
-  ) => {
+  const handleCreateProduct = async ( productData ) => {
     try {
       await createProduct( productData, user )
       await loadProducts()
@@ -67,6 +68,32 @@ function ProducerProducts() {
       return false
     }
   }
+  /* EDIT PRODUCT */
+  const handleEditProduct = async ( productData ) => {
+    try {
+      await updateProduct(
+        editingProduct.id,
+        productData
+      )
+      await loadProducts()
+      setEditingProduct(null)
+      return true
+    }
+    catch (error) {
+      console.log(error)
+      return false
+    }
+  }
+  /* OPEN EDIT MODAL */
+  const openEditModal = (product) => {
+    setEditingProduct(product)
+    setIsModalOpen(true)
+  }
+  /* CLOSE EDIT MODAL */
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setEditingProduct(null)
+  }
   return (
     <div className="space-y-8">
       {/* HEADER */}
@@ -76,7 +103,12 @@ function ProducerProducts() {
           <p className="mt-2 text-textSoft">Gestiona tus productos publicados.</p>
         </div>
         {/* CREATE BUTTON */}
-        <button onClick={() => setIsModalOpen(true) } className="bg-leaf hover:bg-leafDark text-white px-5 py-3 rounded-2xl font-semibold flex items-center justify-center gap-2 transition">
+        <button
+          onClick={() => {
+            setEditingProduct(null) 
+            setIsModalOpen(true)
+          }}
+          className="bg-leaf hover:bg-leafDark text-white px-5 py-3 rounded-2xl font-semibold flex items-center justify-center gap-2 transition">
           <Plus size={20} />
           Nuevo producto
         </button>
@@ -111,7 +143,7 @@ function ProducerProducts() {
       }
       {/* PRODUCTS */}
       {
-        products.length > 0 && (
+        !loading && products.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {
               products.map(product => (
@@ -119,6 +151,10 @@ function ProducerProducts() {
                   key={product.id}
                   className="relative"
                 >
+                  {/* EDIT */}
+                  <button onClick={() => openEditModal(product) } className="absolute top-3 left-3 z-10 bg-white/90 hover:bg-blue-50 border border-border px-3 py-2 rounded-xl text-sm font-medium transition">
+                    Editar
+                  </button>
                   {/* DELETE */}
                   <button onClick={() => handleDelete(product.id) } className="absolute top-3 right-3 z-10 bg-white/90 hover:bg-red-50 border border-border px-3 py-2 rounded-xl text-sm font-medium transition">
                     Eliminar
@@ -136,10 +172,13 @@ function ProducerProducts() {
       {/* MODAL */}
       <ProductFormModal
         isOpen={isModalOpen}
-        onClose={() =>
-          setIsModalOpen(false)
+        onClose={closeModal}
+        onSubmit={
+          editingProduct
+            ? handleEditProduct
+            : handleCreateProduct
         }
-        onSubmit={handleCreateProduct}
+        initialData={editingProduct}
       />
     </div>
   )

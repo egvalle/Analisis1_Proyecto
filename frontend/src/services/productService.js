@@ -53,18 +53,25 @@ export const createProduct = async ( productData, producer ) => {
 }
 /* UPDATE PRODUCT */
 export const updateProduct = async ( productId, updatedData ) => {
-  const products = getProductsStorage()
+  const products = JSON.parse(
+    localStorage.getItem("products")
+  ) || []
   const updatedProducts =
     products.map(product => {
       if (product.id === productId) {
         return {
           ...product,
-          ...updatedData
+          ...updatedData,
+          updated_at:
+            new Date().toISOString()
         }
       }
       return product
     })
-  saveProductsStorage(updatedProducts)
+  localStorage.setItem(
+    "products",
+    JSON.stringify(updatedProducts)
+  )
   return true
 }
 /* DELETE PRODUCT */
