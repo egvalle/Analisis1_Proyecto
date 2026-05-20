@@ -5,7 +5,7 @@ import LoginPage from "../pages/LoginPage"
 import RegisterPage from "../pages/RegisterPage"
 import DashboardPage from "../pages/DashboardPage"
 import CatalogPage from "../pages/CatalogPage"
-
+import ProducerProductsPage from "../pages/ProducerProductsPage"
 import ProtectedRoute from "./ProtectedRoute"
 
 function AppRouter() {
@@ -42,7 +42,14 @@ function AppRouter() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/mis-publicaciones"
+          element={
+            <ProtectedRoute>
+              <ProducerProductsPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )

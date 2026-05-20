@@ -59,6 +59,10 @@ class User(Base):
         back_populates="user",
         cascade="all, delete-orphan"
     )
+    products = relationship(
+        "Product",
+        back_populates="producer"
+    )
 
 class Role(Base):
     __tablename__ = "roles"

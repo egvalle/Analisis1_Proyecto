@@ -9,8 +9,8 @@ function ProductDetailsModal({ product, isOpen, onClose }) {
       {/* OVERLAY */}
       <div onClick={onClose} className="absolute inset-0"/>
       {/* MODAL */}
-      <div className="relative bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl animate-fadeIn">
-        {/* HEADER IMAGE */}
+      <div className="relative bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+        {/* HEADER */}
         <div className="h-56 bg-gradient-to-br from-leaf/15 to-leaf/5 flex items-center justify-center border-b border-border relative">
           <span className="text-8xl">
             🌽
@@ -26,17 +26,19 @@ function ProductDetailsModal({ product, isOpen, onClose }) {
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
             <div>
               <h2 className="text-3xl font-bold text-earth">
-                {product.name}
+                {product.title}
               </h2>
               <div className="mt-3 flex items-center gap-2 text-textSoft">
                 <User size={18} />
                 <span>
-                  {product.producer}
+                  {product.producer_name}
                 </span>
               </div>
             </div>
             {/* STATUS */}
-            <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold text-sm self-start">Disponible</span>
+            <span className="px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold text-sm self-start">
+              Disponible
+            </span>
           </div>
           {/* INFO GRID */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
@@ -50,28 +52,31 @@ function ProductDetailsModal({ product, isOpen, onClose }) {
             <InfoCard
               icon={<Package size={18} />}
               title="Cantidad"
-              value={product.quantity}
+              value={`${product.quantity} ${product.unit}`}
             />
             {/* PRICE */}
             <InfoCard
               icon={<DollarSign size={18} />}
-              title="Precio referencia"
+              title="Precio"
               value={`Q${product.price}`}
             />
             {/* CONTACT */}
             <InfoCard
               icon={<Phone size={18} />}
               title="Teléfono"
-              value={product.phone}
+              value={product.producer_phone}
             />
+          </div>
+          {/* CATEGORY */}
+          <div className="mt-6">
+            <span className="inline-block bg-leaf/10 text-leaf px-4 py-2 rounded-xl font-medium">
+              {product.category}
+            </span>
           </div>
           {/* DESCRIPTION */}
           <div className="mt-8">
             <div className="flex items-center gap-2 mb-3">
-              <FileText
-                size={18}
-                className="text-leaf"
-              />
+              <FileText size={18} className="text-leaf"/>
               <h3 className="text-lg font-semibold text-earth">Descripción</h3>
             </div>
             <p className="text-textSoft leading-relaxed">

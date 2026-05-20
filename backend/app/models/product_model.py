@@ -3,13 +3,13 @@ from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Numeric
 from sqlalchemy import Boolean
+from sqlalchemy import Text
 from sqlalchemy import DateTime
 from sqlalchemy import ForeignKey
-from sqlalchemy import Text
-
-from sqlalchemy.orm import relationship
 
 from sqlalchemy.sql import func
+
+from sqlalchemy.orm import relationship
 
 from app.database.database import Base
 
@@ -18,13 +18,11 @@ class Product(Base):
     __table_args__ = {
         "schema": "catalog"
     }
-
     id = Column(
         Integer,
         primary_key=True,
         index=True
     )
-
     producer_id = Column(
         Integer,
         ForeignKey("auth.users.id"),
@@ -35,8 +33,7 @@ class Product(Base):
         nullable=False
     )
     category = Column(
-        String(100),
-        nullable=True
+        String(100)
     )
     quantity = Column(
         Numeric(10, 2),
@@ -55,24 +52,24 @@ class Product(Base):
         nullable=False
     )
     description = Column(
-        Text,
-        nullable=True
+        Text
     )
     is_active = Column(
         Boolean,
         default=True
     )
     created_at = Column(
-        DateTime(timezone=True),
+        DateTime,
         server_default=func.now()
     )
     updated_at = Column(
-        DateTime(timezone=True),
+        DateTime,
         server_default=func.now(),
         onupdate=func.now()
     )
 
-    # RELATIONSHIP
+    """ RELATIONSHIP """
     producer = relationship(
-        "User"
+        "User",
+        back_populates="products"
     )

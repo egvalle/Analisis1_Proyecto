@@ -1,87 +1,131 @@
-const PRODUCTS_KEY = "products"
-/* GET PRODUCTS */
-const getProductsStorage = () => {
-  const products = localStorage.getItem(PRODUCTS_KEY)
-  return products
-    ? JSON.parse(products)
-    : []
-}
-/* SAVE PRODUCTS */
-const saveProductsStorage = (products) => {
-  localStorage.setItem(
-    PRODUCTS_KEY,
-    JSON.stringify(products)
-  )
-}
+import { API_URL } from "../config/api"
+
 /* GET ALL PRODUCTS */
 export const getAllProducts = async () => {
-  return getProductsStorage()
+  const response = await fetch(
+    `${API_URL}/products`
+  )
+  if (!response.ok) {
+    throw new Error(
+      "Error al obtener productos"
+    )
+  }
+  return await response.json()
 }
 /* GET PRODUCTS BY PRODUCER */
-export const getProductsByProducer = async (producerId) => {
-  const products = getProductsStorage()
-  return products.filter(
-    product =>
-      product.producer_id === producerId
+export const getProductsByProducer = async ( producerId ) => {
+  const response = await fetch(
+    `${API_URL}/products/producer/${producerId}`
   )
+  if (!response.ok) {
+    throw new Error(
+      "Error al obtener productos"
+    )
+  }
+  return await response.json()
 }
 /* CREATE PRODUCT */
-export const createProduct = async ( productData, producer ) => {
-  const products =
-    getProductsStorage()
-  /* NEW PRODUCT */
-  const newProduct = {
-    id: Date.now(),
-    name: productData.name,
-    category: productData.category,
-    description: productData.description,
-    price: Number(productData.price),
-    stock: Number(productData.stock),
-    unit: productData.unit,
-    location: productData.location,
-    image: productData.image || "🌽",
-    created_at: new Date(),
-    /* PRODUCER */
-    producer_id: producer.id,
-    producer_name:
-      producer.full_name
+export const createProduct = async ( productData, user ) => {
+  const payload = {
+    producer_id:
+      user.id,
+    title:
+      productData.title,
+    category:
+      productData.category,
+    quantity:
+      Number(productData.quantity),
+    unit:
+      productData.unit,
+    price:
+      Number(productData.price),
+    location:
+      productData.location,
+    description:
+      productData.description
   }
-  /* SAVE */
-  products.push(newProduct)
-  saveProductsStorage(products)
-  return newProduct
+  const response = await fetch(
+    `${API_URL}/products`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json"
+      },
+      body: JSON.stringify(
+        payload
+      )
+    }
+  )
+  if (!response.ok) {
+    const errorData =
+      await response.json()
+    throw new Error(
+      errorData.detail
+      ||
+      "Error al crear producto"
+    )
+  }
+  return await response.json()
 }
 /* UPDATE PRODUCT */
 export const updateProduct = async ( productId, updatedData ) => {
-  const products = JSON.parse(
-    localStorage.getItem("products")
-  ) || []
-  const updatedProducts =
-    products.map(product => {
-      if (product.id === productId) {
-        return {
-          ...product,
-          ...updatedData,
-          updated_at:
-            new Date().toISOString()
-        }
-      }
-      return product
-    })
-  localStorage.setItem(
-    "products",
-    JSON.stringify(updatedProducts)
+  const payload = {
+    title:
+      updatedData.title,
+    category:
+      updatedData.category,
+    quantity:
+      Number(updatedData.quantity),
+    unit:
+      updatedData.unit,
+    price:
+      Number(updatedData.price),
+    location:
+      updatedData.location,
+    description:
+      updatedData.description
+  }
+  const response = await fetch(
+    `${API_URL}/products/${productId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type":
+          "application/json"
+      },
+      body: JSON.stringify(
+        payload
+      )
+    }
   )
-  return true
+  if (!response.ok) {
+    const errorData =
+      await response.json()
+    throw new Error(
+      errorData.detail
+      ||
+      "Error al actualizar producto"
+    )
+  }
+  return await response.json()
 }
 /* DELETE PRODUCT */
 export const deleteProduct = async ( productId ) => {
-  const products = getProductsStorage()
-  const filteredProducts =
-    products.filter(
-      product =>
-        product.id !== productId
+  const response = await fetch(
+    `${API_URL}/products/${productId}`,
+    {
+      method: "DELETE"
+    }
+  )
+  if (!response.ok) {
+    const errorData =
+      await response.json()
+    throw new Error(
+      errorData.detail
+      ||
+      "Error al eliminar producto"
     )
-  saveProductsStorage(filteredProducts)
+  }
   return true
 }

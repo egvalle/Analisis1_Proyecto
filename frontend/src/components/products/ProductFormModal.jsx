@@ -5,35 +5,32 @@ function ProductFormModal({ isOpen, onClose, onSubmit, initialData = null }) {
   /* FORM */
   const [formData, setFormData] =
     useState({
-      name: "",
+      title: "",
       category: "",
       description: "",
       price: "",
-      stock: "",
+      quantity: "",
       unit: "",
-      location: "",
-      image: "🌽"
+      location: ""
     })
   /* EDIT MODE */
   useEffect(() => {
     if (initialData) {
       setFormData({
-        name:
-          initialData.name || "",
+        title:
+          initialData.title || "",
         category:
           initialData.category || "",
         description:
           initialData.description || "",
         price:
           initialData.price || "",
-        stock:
-          initialData.stock || "",
+        quantity:
+          initialData.quantity || "",
         unit:
           initialData.unit || "",
         location:
-          initialData.location || "",
-        image:
-          initialData.image || "🌽"
+          initialData.location || ""
       })
     }
   }, [initialData])
@@ -51,14 +48,13 @@ function ProductFormModal({ isOpen, onClose, onSubmit, initialData = null }) {
     await onSubmit(formData)
     /* RESET */
     setFormData({
-      name: "",
+      title: "",
       category: "",
       description: "",
       price: "",
-      stock: "",
+      quantity: "",
       unit: "",
-      location: "",
-      image: "🌽"
+      location: ""
     })
     onClose()
   }
@@ -90,10 +86,10 @@ function ProductFormModal({ isOpen, onClose, onSubmit, initialData = null }) {
         </div>
         {/* BODY */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
-          {/* NAME */}
+          {/* TITLE */}
           <div>
             <label className="block mb-2 font-medium text-earth">Nombre producto</label>
-            <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
+            <input type="text" name="title" required value={formData.title} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
           </div>
           {/* GRID */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -120,10 +116,10 @@ function ProductFormModal({ isOpen, onClose, onSubmit, initialData = null }) {
               <label className="block mb-2 font-medium text-earth">Precio</label>
               <input type="number" required name="price" value={formData.price} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
             </div>
-            {/* STOCK */}
+            {/* QUANTITY */}
             <div>
-              <label className="block mb-2 font-medium text-earth">Stock</label>
-              <input type="number" required name="stock" value={formData.stock} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
+              <label className="block mb-2 font-medium text-earth">Cantidad</label>
+              <input type="number" required name="quantity" value={formData.quantity} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
             </div>
             {/* UNIT */}
             <div>

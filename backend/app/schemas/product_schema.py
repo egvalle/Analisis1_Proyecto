@@ -1,9 +1,6 @@
 from pydantic import BaseModel
-
 from decimal import Decimal
-
 from typing import Optional
-
 from datetime import datetime
 
 """ BASE PRODUCT """
@@ -22,7 +19,7 @@ class ProductBase(
 class ProductCreate(
     ProductBase
 ):
-    pass
+    producer_id: int
 
 """ UPDATE PRODUCT """
 class ProductUpdate(

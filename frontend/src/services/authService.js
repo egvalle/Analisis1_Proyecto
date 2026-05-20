@@ -1,9 +1,7 @@
 import { API_URL } from "../config/api"
 
 /* REGISTER */
-export const registerUser = async (
-  formData
-) => {
+export const registerUser = async ( formData ) => {
   /* ROLE IDS */
   const roleMap = {
     COMPRADOR: 1,
@@ -48,10 +46,8 @@ export const registerUser = async (
       "Error al registrar usuario"
     )
   }
-  /* SUCCESS */
   return await response.json()
 }
-
 /* LOGIN */
 export const loginUser = async ( credentials ) => {
   const response = await fetch(
@@ -80,32 +76,18 @@ export const loginUser = async ( credentials ) => {
       "Credenciales inválidas"
     )
   }
-  /* DATA */
-  const data =
-    await response.json()
-  /* SAVE SESSION */
-  localStorage.setItem(
-    "token",
-    data.access_token
-  )
-  localStorage.setItem(
-    "user",
-    JSON.stringify(data.user)
-  )
-  return data.user
+  /* RETURN RESPONSE */
+  return await response.json()
 }
-
 /* LOGOUT */
 export const logoutUser = () => {
   localStorage.removeItem("token")
   localStorage.removeItem("user")
 }
-
 /* GET CURRENT USER */
 export const getCurrentUser = () => {
-  const user = localStorage.getItem(
-    "user"
-  )
+  const user =
+    localStorage.getItem("user")
   return user
     ? JSON.parse(user)
     : null

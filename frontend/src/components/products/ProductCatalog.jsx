@@ -2,15 +2,17 @@ import { useEffect, useState } from "react"
 
 import ProductCard from "./ProductCard"
 import ProductFilters from "./ProductFilters"
-import { getAllProducts } from "../../services/productService"
 
+import { getAllProducts } from "../../services/productService"
 function ProductCatalog() {
   /* PRODUCTS */
   const [products, setProducts] =
     useState([])
   /* FILTERED */
-  const [filteredProducts, setFilteredProducts] =
-    useState([])
+  const [
+    filteredProducts,
+    setFilteredProducts
+  ] = useState([])
   /* FILTERS */
   const [filters, setFilters] =
     useState({
@@ -22,15 +24,18 @@ function ProductCatalog() {
     useState(true)
   /* LOAD PRODUCTS */
   const loadProducts = async () => {
-    setLoading(true)
     try {
+      setLoading(true)
       const data =
         await getAllProducts()
       setProducts(data)
       setFilteredProducts(data)
     }
     catch (error) {
-      console.log(error)
+      console.log(
+        "ERROR LOADING PRODUCTS:",
+        error
+      )
     }
     finally {
       setLoading(false)
@@ -46,8 +51,8 @@ function ProductCatalog() {
     /* SEARCH */
     if (filters.search) {
       result = result.filter(product =>
-        product.name
-          .toLowerCase()
+        product.title
+          ?.toLowerCase()
           .includes(
             filters.search.toLowerCase()
           )
