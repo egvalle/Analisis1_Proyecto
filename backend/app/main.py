@@ -14,10 +14,10 @@ app.add_middleware(
         "https://cosecha-7pux9vbvz-edwin-valle-s-projects.vercel.app",  # El dominio del error
         "https://cosecha-git-main-edwin-valle-s-projects.vercel.app",
     ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
-    allow_origins_regex=r"https://.*\.vercel\.app"
+    allow_headers=["*"]
 )
 
 """ ROUTES """
