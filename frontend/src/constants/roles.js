@@ -1,0 +1,5 @@
+export const ROLES = {
+  BUYER: "COMPRADOR",
+  PRODUCER: "PRODUCTOR",
+  ADMIN: "ADMIN"
+}
