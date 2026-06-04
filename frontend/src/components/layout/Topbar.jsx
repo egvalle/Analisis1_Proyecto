@@ -1,8 +1,17 @@
 import { LogOut, Menu } from "lucide-react"
 import { useAuth } from "../../context/AuthContext"
+import { useNavigate } from "react-router-dom"
 
 function Topbar({ onMenuClick }) {
   const { user, logout } = useAuth()
+  const navigate = useNavigate()
+  /* Para regresar a la landing page al hacer logout */
+  const handleLogout = () => {
+    logout()
+    navigate("/", {
+      replace: true
+    })
+  }
   return (
     <header className="h-20 bg-white border-b border-border px-4 sm:px-6 flex items-center justify-between">
       {/* LEFT */}
@@ -32,7 +41,7 @@ function Topbar({ onMenuClick }) {
           }
         </div>
         {/* LOGOUT */}
-        <button onClick={logout} className="border border-border hover:bg-red-50 hover:border-red-200 p-3 rounded-xl transition">
+        <button onClick={handleLogout} className="border border-border hover:bg-red-50 hover:border-red-200 p-3 rounded-xl transition">
           <LogOut
             size={20}
             className="text-red-500"

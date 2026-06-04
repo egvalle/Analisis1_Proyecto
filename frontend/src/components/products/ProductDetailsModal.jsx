@@ -1,6 +1,17 @@
 import { X, MapPin, User, Package, Phone, DollarSign, FileText } from "lucide-react"
 
+import { useAuth } from "../../context/AuthContext"
+import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
+
 function ProductDetailsModal({ product, isOpen, onClose }) {
+  const { user } = useAuth()
+  const navigate = useNavigate()
+  const [showContact, setShowContact] = useState(false)
+  useEffect(() => {
+    setShowContact(false)
+  }, [product, isOpen])
+
   if (!isOpen || !product) {
     return null
   }
@@ -60,12 +71,6 @@ function ProductDetailsModal({ product, isOpen, onClose }) {
               title="Precio"
               value={`Q${product.price}`}
             />
-            {/* CONTACT */}
-            <InfoCard
-              icon={<Phone size={18} />}
-              title="Teléfono"
-              value={product.producer_phone}
-            />
           </div>
           {/* CATEGORY */}
           <div className="mt-6">
@@ -83,9 +88,43 @@ function ProductDetailsModal({ product, isOpen, onClose }) {
               {product.description}
             </p>
           </div>
+          {/* CONTACT INFO */}
+          {
+            showContact && (
+              <div className="mt-8 bg-background border border-border rounded-2xl p-5">
+                <h3 className="text-lg font-semibold text-earth mb-4">
+                  Información del productor
+                </h3>
+                <div className="space-y-2">
+                  <p>
+                    <strong>Nombre:</strong>
+                    {" "}
+                    {product.producer_name}
+                  </p>
+                  <p>
+                    <strong>Teléfono:</strong>
+                    {" "}
+                    {product.producer_phone}
+                  </p>
+                  <p>
+                    <strong>Correo:</strong>
+                    {" "}
+                    {product.producer_email}
+                  </p>
+                </div>
+              </div>
+            )
+          }
           {/* ACTIONS */}
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
-            <button className="flex-1 bg-leaf hover:bg-leafDark text-white py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition">
+            <button className="flex-1 bg-leaf hover:bg-leafDark text-white py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition"
+              onClick={() => {
+                if (!user) {
+                  navigate("/login")
+                  return
+                }
+                setShowContact(true)
+              }}>
               <Phone size={20} />
               Contactar productor
             </button>
