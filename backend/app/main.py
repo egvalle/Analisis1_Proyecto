@@ -12,11 +12,12 @@ app.add_middleware(
         "http://localhost:5173",                                         # Desarrollo local
         "https://cosecha-red.vercel.app",                                # Tu dominio principal de Vercel
         "https://cosecha-7pux9vbvz-edwin-valle-s-projects.vercel.app",  # El dominio del error
-        "https://cosecha-git-develop-edwin-valle-s-projects.vercel.app",
+        "https://cosecha-git-main-edwin-valle-s-projects.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
+    allow_origins_regex=r"https://.*\.vercel\.app"
 )
 
 """ ROUTES """
