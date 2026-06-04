@@ -5,8 +5,6 @@ from fastapi import status
 
 from sqlalchemy.orm import Session
 
-from passlib.context import CryptContext
-
 from app.database.database import get_db
 
 from app.models.user_model import User
@@ -18,14 +16,11 @@ from app.schemas.auth_schema import LoginRequest
 from app.schemas.auth_schema import AuthResponse
 from app.schemas.auth_schema import UserResponse
 
+from app.utils.auth import hash_password, verify_password
+
 router = APIRouter(
     prefix="/auth",
     tags=["Auth"]
-)
-
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto"
 )
 
 """ REGISTER """
@@ -51,12 +46,8 @@ def register(
         )
 
     """ HASH PASSWORD """
-    password = payload.password.encode( "utf-8" ).decode(
-        "utf-8"
-    )
-    hashed_password = pwd_context.hash(
-        password
-    )
+    password = payload.password.encode( "utf-8" ).decode("utf-8")
+    hashed_password = hash_password(password)
 
     """ CREATE USER """
     user = User(
@@ -127,7 +118,7 @@ def login(
         )
 
     """ VERIFY PASSWORD """
-    valid_password = pwd_context.verify(
+    valid_password = verify_password(
         payload.password,
         user.password_hash
     )
