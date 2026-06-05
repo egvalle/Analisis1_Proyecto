@@ -42,7 +42,9 @@ export const createProduct = async ( productData, user ) => {
     location:
       productData.location,
     description:
-      productData.description
+      productData.description,
+    image_url:
+      productData.image_url,
   }
   const response = await fetch(
     `${API_URL}/products`,
@@ -84,7 +86,9 @@ export const updateProduct = async ( productId, updatedData ) => {
     location:
       updatedData.location,
     description:
-      updatedData.description
+      updatedData.description,
+    image_url:
+      updatedData.image_url
   }
   const response = await fetch(
     `${API_URL}/products/${productId}`,
@@ -106,6 +110,27 @@ export const updateProduct = async ( productId, updatedData ) => {
       errorData.detail
       ||
       "Error al actualizar producto"
+    )
+  }
+  return await response.json()
+}
+/* IMAGE PRODUCT */
+export const uploadImage = async (file) => {
+  const formData = new FormData()
+  formData.append(
+    "file",
+    file
+  )
+  const response = await fetch(
+    `${API_URL}/products/upload-image`,
+    {
+      method: "POST",
+      body: formData
+    }
+  )
+  if (!response.ok) {
+    throw new Error(
+      "Error al subir imagen"
     )
   }
   return await response.json()

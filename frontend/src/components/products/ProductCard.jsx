@@ -1,7 +1,10 @@
 import { useState } from "react"
-
 import { MapPin, User, Package, DollarSign, Eye } from "lucide-react"
+
 import ProductDetailsModal from "./ProductDetailsModal"
+
+import { API_URL } from "../../config/api"
+
 function ProductCard({ product }) {
   /* MODAL */
   const [isModalOpen, setIsModalOpen] =
@@ -17,9 +20,21 @@ function ProductCard({ product }) {
       <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-soft hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
         {/* IMAGE */}
         <div className="h-48 bg-gradient-to-br from-leaf/10 to-leaf/5 flex items-center justify-center border-b border-border">
-          <span className="text-5xl md:text-7xl">
-            🌽
-          </span>
+            {
+              product.image_url
+                ? (
+                  <img
+                    src={`${API_URL}${product.image_url}`}
+                    alt={product.title}
+                    className="w-full h-full object-cover"
+                  />
+                )
+                : (
+                  <span className="text-5xl md:text-7xl">
+                    🌽
+                  </span>
+                )
+            }
         </div>
         {/* CONTENT */}
         <div className="p-5">

@@ -67,6 +67,10 @@ class Product(Base):
         server_default=func.now(),
         onupdate=func.now()
     )
+    image_url = Column(
+        String,
+        nullable=True
+    )
 
     """ RELATIONSHIP """
     producer = relationship(

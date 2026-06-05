@@ -13,6 +13,9 @@ function ProductFormModal({ isOpen, onClose, onSubmit, initialData = null }) {
       unit: "",
       location: ""
     })
+  /* IMAGE */
+  const [imageFile, setImageFile] =
+    useState(null)
   /* EDIT MODE */
   useEffect(() => {
     if (initialData) {
@@ -42,10 +45,23 @@ function ProductFormModal({ isOpen, onClose, onSubmit, initialData = null }) {
         e.target.value
     })
   }
+  const handleImageChange = (e) => {
+    if (
+      e.target.files &&
+      e.target.files[0]
+    ) {
+      setImageFile(
+        e.target.files[0]
+      )
+    }
+  }
   /* SUBMIT */
   const handleSubmit = async (e) => {
     e.preventDefault()
-    await onSubmit(formData)
+    await onSubmit({
+      ...formData,
+      imageFile
+    })
     /* RESET */
     setFormData({
       title: "",
@@ -125,6 +141,10 @@ function ProductFormModal({ isOpen, onClose, onSubmit, initialData = null }) {
             <div>
               <label className="block mb-2 font-medium text-earth">Unidad</label>
               <input type="text" required name="unit" value={formData.unit} onChange={handleChange} placeholder="kg" className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
+            </div>
+            <div>
+              <label className="block mb-2 font-medium text-earth">Fotografía</label>
+              <input type="file" accept="image/*" onChange={handleImageChange} />
             </div>
           </div>
           {/* FOOTER */}

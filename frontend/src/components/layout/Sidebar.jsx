@@ -82,9 +82,9 @@ function Sidebar({ isOpen, onClose }) {
                   label="Mis publicaciones"
                 />
                 <SidebarItem
-                  to="/ventas"
+                  to="/historial"
                   icon={<History size={20} />}
-                  label="Historial ventas"
+                  label="Historial"
                 />
               </>
             )

@@ -4,6 +4,8 @@ import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 
+import { createInteraction } from "../../services/interactionService"
+
 function ProductDetailsModal({ product, isOpen, onClose }) {
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -11,7 +13,29 @@ function ProductDetailsModal({ product, isOpen, onClose }) {
   useEffect(() => {
     setShowContact(false)
   }, [product, isOpen])
-
+  const handleContactProducer = async () => {
+    /* USER NOT LOGGED */
+    if (!user) {
+      navigate("/login")
+      return
+    }
+    try {
+      /* SAVE INTERACTION */
+      await createInteraction({
+        buyer_id: user.id,
+        producer_id: product.producer_id,
+        product_id: product.id
+      })
+      /* SHOW CONTACT INFO */
+      setShowContact(true)
+    }
+    catch (error) {
+      console.error(error)
+      alert(
+        "No fue posible registrar la interacción"
+      )
+    }
+  }
   if (!isOpen || !product) {
     return null
   }
@@ -117,16 +141,8 @@ function ProductDetailsModal({ product, isOpen, onClose }) {
           }
           {/* ACTIONS */}
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
-            <button className="flex-1 bg-leaf hover:bg-leafDark text-white py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition"
-              onClick={() => {
-                if (!user) {
-                  navigate("/login")
-                  return
-                }
-                setShowContact(true)
-              }}>
-              <Phone size={20} />
-              Contactar productor
+            <button className="flex-1 bg-leaf hover:bg-leafDark text-white py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition" onClick={handleContactProducer}>
+              <Phone size={20} />Contactar productor
             </button>
             <button onClick={onClose} className="flex-1 border border-border py-4 rounded-2xl font-semibold hover:bg-sand transition">Cerrar</button>
           </div>

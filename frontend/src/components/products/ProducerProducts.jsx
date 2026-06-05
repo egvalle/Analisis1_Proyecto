@@ -3,7 +3,7 @@ import { Plus, Package } from "lucide-react"
 
 import ProductCard from "./ProductCard"
 import ProductFormModal from "./ProductFormModal"
-import { getProductsByProducer, deleteProduct, createProduct, updateProduct } from "../../services/productService"
+import { getProductsByProducer, deleteProduct, createProduct, updateProduct, uploadImage } from "../../services/productService"
 import { useAuth } from "../../context/AuthContext"
 
 function ProducerProducts() {
@@ -59,7 +59,24 @@ function ProducerProducts() {
   /* CREATE PRODUCT */
   const handleCreateProduct = async ( productData ) => {
     try {
-      await createProduct( productData, user )
+      let image_url = null
+      if (
+        productData.imageFile
+      ) {
+        const uploadResult =
+          await uploadImage(
+            productData.imageFile
+          )
+        image_url =
+          uploadResult.image_url
+      }
+      await createProduct(
+        {
+          ...productData,
+          image_url
+        },
+        user
+      )
       await loadProducts()
       return true
     }
@@ -71,9 +88,24 @@ function ProducerProducts() {
   /* EDIT PRODUCT */
   const handleEditProduct = async ( productData ) => {
     try {
+      let image_url =
+        editingProduct.image_url
+      if (
+        productData.imageFile
+      ) {
+        const uploadResult =
+          await uploadImage(
+            productData.imageFile
+          )
+        image_url =
+          uploadResult.image_url
+      }
       await updateProduct(
         editingProduct.id,
-        productData
+        {
+          ...productData,
+          image_url
+        }
       )
       await loadProducts()
       setEditingProduct(null)

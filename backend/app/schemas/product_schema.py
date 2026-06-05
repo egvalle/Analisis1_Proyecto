@@ -14,6 +14,7 @@ class ProductBase(
     price: Decimal
     location: str
     description: Optional[str] = None
+    image_url: Optional[str] = None
 
 """ CREATE PRODUCT """
 class ProductCreate(
@@ -34,8 +35,11 @@ class ProductResponse(
     id: int
     producer_id: int
     producer_name: str
+    producer_email: str
+    producer_phone: str
     is_active: bool
     created_at: datetime
     updated_at: datetime
+    image_url: Optional[str] = None
     class Config:
         from_attributes = True

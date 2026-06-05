@@ -2,6 +2,12 @@ from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import status
+from fastapi import UploadFile
+from fastapi import File
+
+import shutil
+import uuid
+import os
 
 from sqlalchemy.orm import Session
 
@@ -12,6 +18,38 @@ from app.models.product_model import Product
 from app.schemas.product_schema import ( ProductCreate, ProductUpdate, ProductResponse )
 
 router = APIRouter( prefix="/products", tags=["Products"] )
+
+@router.post(
+    "/upload-image"
+)
+def upload_image(
+    file: UploadFile = File(...)
+):
+    os.makedirs(
+        "uploads/products",
+        exist_ok=True
+    )
+    extension = (
+        file.filename.split(".")[-1]
+    )
+    filename = (
+        f"{uuid.uuid4()}.{extension}"
+    )
+    file_path = (
+        f"uploads/products/{filename}"
+    )
+    with open(
+        file_path,
+        "wb"
+    ) as buffer:
+        shutil.copyfileobj(
+            file.file,
+            buffer
+        )
+    return {
+        "image_url":
+        f"/uploads/products/{filename}"
+    }
 
 """ GET ALL PRODUCTS """
 @router.get(
@@ -29,6 +67,8 @@ def get_products(
             id=product.id,
             producer_id=product.producer_id,
             producer_name=product.producer.full_name,
+            producer_email=product.producer.email,
+            producer_phone=product.producer.phone,
             title=product.title,
             category=product.category,
             quantity=product.quantity,
@@ -38,7 +78,8 @@ def get_products(
             description=product.description,
             is_active=product.is_active,
             created_at=product.created_at,
-            updated_at=product.updated_at
+            updated_at=product.updated_at,
+            image_url=product.image_url
         )
         for product in products
     ]
@@ -60,6 +101,8 @@ def get_products_by_producer(
             id=product.id,
             producer_id=product.producer_id,
             producer_name=product.producer.full_name,
+            producer_email=product.producer.email,
+            producer_phone=product.producer.phone,
             title=product.title,
             category=product.category,
             quantity=product.quantity,
@@ -69,7 +112,8 @@ def get_products_by_producer(
             description=product.description,
             is_active=product.is_active,
             created_at=product.created_at,
-            updated_at=product.updated_at
+            updated_at=product.updated_at,
+            image_url=product.image_url
         )
         for product in products
     ]
@@ -92,7 +136,8 @@ def create_product(
         unit=payload.unit,
         price=payload.price,
         location=payload.location,
-        description=payload.description
+        description=payload.description,
+        image_url=payload.image_url
     )
 
     db.add(product)
@@ -105,6 +150,8 @@ def create_product(
         id=product.id,
         producer_id=product.producer_id,
         producer_name=product.producer.full_name,
+        producer_email=product.producer.email,
+        producer_phone=product.producer.phone,
         title=product.title,
         category=product.category,
         quantity=product.quantity,
@@ -114,7 +161,8 @@ def create_product(
         description=product.description,
         is_active=product.is_active,
         created_at=product.created_at,
-        updated_at=product.updated_at
+        updated_at=product.updated_at,
+        image_url=product.image_url
     )
 
 """ UPDATE PRODUCT """
@@ -142,6 +190,7 @@ def update_product(
     product.price = payload.price
     product.location = payload.location
     product.description = payload.description
+    product.image_url = payload.image_url
 
     db.commit()
 
@@ -151,6 +200,8 @@ def update_product(
         id=product.id,
         producer_id=product.producer_id,
         producer_name=product.producer.full_name,
+        producer_email=product.producer.email,
+        producer_phone=product.producer.phone,
         title=product.title,
         category=product.category,
         quantity=product.quantity,
@@ -160,7 +211,8 @@ def update_product(
         description=product.description,
         is_active=product.is_active,
         created_at=product.created_at,
-        updated_at=product.updated_at
+        updated_at=product.updated_at,
+        image_url=product.image_url
     )
 
 """ DELETE PRODUCT """
