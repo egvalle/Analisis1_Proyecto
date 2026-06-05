@@ -7,6 +7,7 @@ import DashboardPage from "../pages/DashboardPage"
 import CatalogPage from "../pages/CatalogPage"
 import ProducerProductsPage from "../pages/ProducerProductsPage"
 import HistoryPage from "../pages/HistoryPage"
+import RatingsPage from "../pages/RatingsPage"
 
 import ProtectedRoute from "./ProtectedRoute"
 
@@ -57,6 +58,14 @@ function AppRouter() {
           element={
             <ProtectedRoute>
               <HistoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/valoraciones"
+          element={
+            <ProtectedRoute>
+              <RatingsPage />
             </ProtectedRoute>
           }
         />

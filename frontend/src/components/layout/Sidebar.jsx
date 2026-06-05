@@ -86,6 +86,11 @@ function Sidebar({ isOpen, onClose }) {
                   icon={<History size={20} />}
                   label="Historial"
                 />
+                <SidebarItem
+                  to="/valoraciones"
+                  icon={<Star size={20} />}
+                  label="Valoraciones"
+                />
               </>
             )
           }
