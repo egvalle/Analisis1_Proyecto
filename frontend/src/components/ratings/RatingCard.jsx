@@ -99,9 +99,7 @@ function RatingCard({ ranking, position }) {
           size={18}
           className="text-leaf"
         />
-        <span className="text-sm">
-          Ranking #{position}
-        </span>
+        <span className="text-sm">Ranking #{position}</span>
       </div>
     </div>
   )

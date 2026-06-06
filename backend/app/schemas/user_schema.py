@@ -33,3 +33,17 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+""" PROFILE """
+class ProfileResponse(BaseModel):
+    id: int
+    full_name: str
+    email: str
+    phone: str
+    roles: list[str]
+    average_rating: float
+    is_active: bool
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

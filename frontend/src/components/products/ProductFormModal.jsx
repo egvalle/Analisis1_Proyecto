@@ -112,7 +112,26 @@ function ProductFormModal({ isOpen, onClose, onSubmit, initialData = null }) {
             {/* CATEGORY */}
             <div>
               <label className="block mb-2 font-medium text-earth">Categoría</label>
-              <input type="text" name="category" required value={formData.category} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
+              <select name="category" required value={formData.category} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf">
+                <option value="">
+                  Seleccione una categoría
+                </option>
+                <option value="Verduras">
+                  Verduras
+                </option>
+                <option value="Frutas">
+                  Frutas
+                </option>
+                <option value="Granos">
+                  Granos
+                </option>
+                <option value="Hierbas y especias">
+                  Hierbas y especias
+                </option>
+                <option value="Flores">
+                  Flores
+                </option>
+              </select>
             </div>
             {/* LOCATION */}
             <div>
@@ -140,7 +159,35 @@ function ProductFormModal({ isOpen, onClose, onSubmit, initialData = null }) {
             {/* UNIT */}
             <div>
               <label className="block mb-2 font-medium text-earth">Unidad</label>
-              <input type="text" required name="unit" value={formData.unit} onChange={handleChange} placeholder="kg" className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf"/>
+                <select required name="unit" value={formData.unit} onChange={handleChange} className="w-full border border-border rounded-xl px-4 py-3 outline-none focus:border-leaf">
+                  <option value="">
+                    Seleccione una unidad
+                  </option>
+                  <option value="kg">
+                    Kilogramos (kg)
+                  </option>
+                  <option value="lb">
+                    Libras (lb)
+                  </option>
+                  <option value="qq">
+                    Quintales (qq)
+                  </option>
+                  <option value="unidad">
+                    Unidad
+                  </option>
+                  <option value="docena">
+                    Docena
+                  </option>
+                  <option value="caja">
+                    Caja
+                  </option>
+                  <option value="saco">
+                    Saco
+                  </option>
+                  <option value="manojo">
+                    Manojo
+                  </option>
+                </select>
             </div>
             <div>
               <label className="block mb-2 font-medium text-earth">Fotografía</label>

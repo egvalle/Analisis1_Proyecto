@@ -53,3 +53,10 @@ class AuthResponse(
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+""" DASHBOARD """
+class DashboardResponse(BaseModel):
+    purchases_count: int = 0
+    ratings_count: int = 0
+    products_count: int = 0
+    interactions_count: int = 0

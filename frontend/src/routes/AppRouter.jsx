@@ -8,6 +8,7 @@ import CatalogPage from "../pages/CatalogPage"
 import ProducerProductsPage from "../pages/ProducerProductsPage"
 import HistoryPage from "../pages/HistoryPage"
 import RatingsPage from "../pages/RatingsPage"
+import ProfilePage from "../pages/ProfilePage"
 
 import ProtectedRoute from "./ProtectedRoute"
 
@@ -66,6 +67,14 @@ function AppRouter() {
           element={
             <ProtectedRoute>
               <RatingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/perfil"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

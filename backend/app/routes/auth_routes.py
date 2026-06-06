@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from fastapi import status
 
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 
 from app.database.database import get_db
 
@@ -15,6 +16,13 @@ from app.schemas.auth_schema import RegisterRequest
 from app.schemas.auth_schema import LoginRequest
 from app.schemas.auth_schema import AuthResponse
 from app.schemas.auth_schema import UserResponse
+from app.schemas.auth_schema import DashboardResponse
+
+from app.models.interaction_model import Interaction
+
+from app.schemas.user_schema import ProfileResponse
+
+from app.models.product_model import Product
 
 from app.utils.auth import hash_password, verify_password
 
@@ -147,4 +155,126 @@ def login(
             created_at=user.created_at,
             roles=role_names
         )
+    )
+
+""" PROFILE """
+@router.get(
+    "/profile/{user_id}",
+    response_model=ProfileResponse
+)
+def get_profile(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    user = (
+        db.query(User)
+        .filter(
+            User.id == user_id
+        )
+        .first()
+    )
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuario no encontrado"
+        )
+    role_names = [
+        user_role.role.name
+        for user_role in user.roles
+    ]
+    buyer_average = (
+        db.query(
+            func.avg(
+                Interaction.buyer_rating
+            )
+        )
+        .filter(
+            Interaction.buyer_id == user.id,
+            Interaction.buyer_rating.isnot(None)
+        )
+        .scalar()
+    )
+    producer_average = (
+        db.query(
+            func.avg(
+                Interaction.producer_rating
+            )
+        )
+        .filter(
+            Interaction.producer_id == user.id,
+            Interaction.producer_rating.isnot(None)
+        )
+        .scalar()
+    )
+    ratings = []
+    if buyer_average:
+        ratings.append(
+            float(buyer_average)
+        )
+    if producer_average:
+        ratings.append(
+            float(producer_average)
+        )
+    average_rating = (
+        round(
+            sum(ratings) / len(ratings),
+            2
+        )
+        if ratings
+        else 0.0
+    )
+    return ProfileResponse(
+        id=user.id,
+        full_name=user.full_name,
+        email=user.email,
+        phone=user.phone,
+        roles=role_names,
+        average_rating=average_rating,
+        is_active=user.is_active,
+        created_at=user.created_at
+    )
+
+""" DASHBOARD """
+@router.get(
+    "/dashboard/{user_id}",
+    response_model=DashboardResponse
+)
+def get_dashboard(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    purchases_count = (
+        db.query(Interaction)
+        .filter(
+            Interaction.buyer_id == user_id
+        )
+        .count()
+    )
+    ratings_count = (
+        db.query(Interaction)
+        .filter(
+            Interaction.buyer_id == user_id,
+            Interaction.buyer_rating.isnot(None)
+        )
+        .count()
+    )
+    products_count = (
+        db.query(Product)
+        .filter(
+            Product.producer_id == user_id
+        )
+        .count()
+    )
+    interactions_count = (
+        db.query(Interaction)
+        .filter(
+            Interaction.producer_id == user_id
+        )
+        .count()
+    )
+    return DashboardResponse(
+        purchases_count=purchases_count,
+        ratings_count=ratings_count,
+        products_count=products_count,
+        interactions_count=interactions_count
     )

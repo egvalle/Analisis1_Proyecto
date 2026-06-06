@@ -231,11 +231,8 @@ def delete_product(
             status_code=404,
             detail="Producto no encontrado"
         )
-
     db.delete(product)
-
     db.commit()
-
     return {
         "message":
         "Producto eliminado"
