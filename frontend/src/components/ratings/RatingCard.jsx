@@ -1,4 +1,4 @@
-import { Trophy, Star, Award } from "lucide-react"
+import { Trophy, Medal, Star, Award } from "lucide-react"
 
 function RatingCard({ ranking, position }) {
   const renderStars = () => {
