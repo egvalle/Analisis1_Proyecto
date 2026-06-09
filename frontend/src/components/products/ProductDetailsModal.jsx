@@ -4,6 +4,8 @@ import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 
+import { API_URL } from "../../config/api"
+
 import { createInteraction } from "../../services/interactionService"
 
 function ProductDetailsModal({ product, isOpen, onClose }) {
@@ -46,21 +48,21 @@ function ProductDetailsModal({ product, isOpen, onClose }) {
       {/* MODAL */}
       <div className="relative bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
         {/* HEADER */}
-        <div className="h-56 bg-gradient-to-br from-leaf/15 to-leaf/5 flex items-center justify-center border-b border-border relative">
+        <div className="h-56 border-b border-border relative overflow-hidden">
           {
-            product.image_url
-              ? (
-                <img
-                  src={`${API_URL}${product.image_url}`}
-                  alt={product.title}
-                  className="w-full h-full object-cover"
-                />
-              )
-              : (
-                <span className="text-5xl md:text-7xl">
+            product.image_url ? (
+              <img
+                src={`${API_URL}${product.image_url}`}
+                alt={product.title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-leaf/15 to-leaf/5 flex items-center justify-center">
+                <span className="text-8xl">
                   🌽
                 </span>
-              )
+              </div>
+            )
           }
           {/* CLOSE */}
           <button onClick={onClose} className="absolute top-5 right-5 w-11 h-11 rounded-xl bg-white border border-border flex items-center justify-center hover:bg-sand transition">
